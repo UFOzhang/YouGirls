@@ -8,6 +8,8 @@ import { VantResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // 为 GitHub Pages 设置基础路径
+  base: '/YouGirls/',
   plugins: [
     vue(),
     vueDevTools(),

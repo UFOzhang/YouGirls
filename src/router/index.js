@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import MainLayout from '../layouts/MainLayout.vue'
 import HomeView from '../views/home/HomeView.vue'
 import ChatView from '../views/ChatView.vue'
 import PersonaView from '../views/PersonaView.vue'
@@ -10,27 +11,34 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
-      meta: { title: '首页' },
-    },
-    {
-      path: '/chat',
-      name: 'chat',
-      component: ChatView,
-      meta: { title: '聊天' },
-    },
-    {
-      path: '/persona',
-      name: 'persona',
-      component: PersonaView,
-      meta: { title: '人设' },
-    },
-    {
-      path: '/mine',
-      name: 'mine',
-      component: PersonManage,
-      meta: { title: '我的' },
+      component: MainLayout,
+      redirect: '/home', // 默认重定向到 home
+      children: [
+        {
+          path: '/home',
+          name: 'home',
+          component: HomeView,
+          meta: { title: '首页' },
+        },
+        {
+          path: '/chat',
+          name: 'chat',
+          component: ChatView,
+          meta: { title: '聊天' },
+        },
+        {
+          path: '/persona',
+          name: 'persona',
+          component: PersonaView,
+          meta: { title: '人设' },
+        },
+        {
+          path: '/mine',
+          name: 'mine',
+          component: PersonManage,
+          meta: { title: '我的' },
+        },
+      ],
     },
   ],
 })

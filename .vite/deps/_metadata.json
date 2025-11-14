@@ -2,7 +2,36 @@
   "hash": "24a7a17e",
   "configHash": "2f88ff24",
   "lockfileHash": "804d85d2",
-  "browserHash": "7f6248e2",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "700b9fd7",
+  "optimized": {
+    "vue": {
+      "src": "../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "1e05aea1",
+      "needsInterop": false
+    },
+    "pinia": {
+      "src": "../../node_modules/pinia/dist/pinia.mjs",
+      "file": "pinia.js",
+      "fileHash": "7efcdf73",
+      "needsInterop": false
+    },
+    "pinia-plugin-persistedstate": {
+      "src": "../../node_modules/pinia-plugin-persistedstate/dist/index.js",
+      "file": "pinia-plugin-persistedstate.js",
+      "fileHash": "a679d21e",
+      "needsInterop": false
+    },
+    "vue-router": {
+      "src": "../../node_modules/vue-router/dist/vue-router.mjs",
+      "file": "vue-router.js",
+      "fileHash": "6f93a8a5",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-MOTEMUGC": {
+      "file": "chunk-MOTEMUGC.js"
+    }
+  }
 }

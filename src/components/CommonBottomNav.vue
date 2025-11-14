@@ -1,9 +1,9 @@
 <template>
   <van-tabbar route>
     <van-tabbar-item to="/home" icon="wap-home-o" name="home"> 首页 </van-tabbar-item>
-    <van-tabbar-item to="/message" icon="chat-o" name="message"> 消息 </van-tabbar-item>
-    <van-tabbar-item to="/about" icon="apps-o" name="about"> 关于 </van-tabbar-item>
-    <van-tabbar-item to="/profile" icon="user-o" name="profile"> 我的 </van-tabbar-item>
+    <van-tabbar-item to="/chat" icon="chat-o" name="chat"> 聊天 </van-tabbar-item>
+    <van-tabbar-item to="/persona" icon="user-o" name="persona"> 人设 </van-tabbar-item>
+    <van-tabbar-item to="/mine" icon="user-circle-o" name="mine"> 我的 </van-tabbar-item>
   </van-tabbar>
 </template>
 

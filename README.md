@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # YouGirl
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -48,3 +49,7 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+=======
+# YouGirls
+适合你的girls
+>>>>>>> 2c08206783f92f8fd156a48202cbb6fa756a3364

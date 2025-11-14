@@ -1,0 +1,105 @@
+/* 移动端适配基础样式 */
+html {
+  /* 防止页面滚动 */
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* 防止点击高亮 */
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  /* 设置默认字体大小 */
+  font-size: 14px;
+  /* 设置默认行高 */
+  line-height: 1.5;
+  /* 设置默认字体 */
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    Helvetica,
+    Segoe UI,
+    Arial,
+    Roboto,
+    'PingFang SC',
+    'miui',
+    'Hiragino Sans GB',
+    'Microsoft Yahei',
+    sans-serif;
+  /* 防止页面滚动 */
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* 防止文本调整大小 */
+  -webkit-text-size-adjust: 100%;
+  /* 提高性能 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 常用工具类 */
+.clearfix::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+/* 文本省略 */
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* flex 布局 */
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+/* 常用边距 */
+.m-10 {
+  margin: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.mr-10 {
+  margin-right: 10px;
+}
+
+.p-10 {
+  padding: 10px;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+.pb-10 {
+  padding-bottom: 10px;
+}
+
+.pl-10 {
+  padding-left: 10px;
+}
+
+.pr-10 {
+  padding-right: 10px;
+}

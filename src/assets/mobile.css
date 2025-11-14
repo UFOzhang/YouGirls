@@ -1,105 +1,115 @@
-/* 移动端适配基础样式 */
+/* 移动端适配样式 */
+
+/* 基础移动端样式 */
 html {
-  /* 防止页面滚动 */
-  overflow-x: hidden;
-  overflow-y: auto;
-  /* 防止点击高亮 */
-  -webkit-tap-highlight-color: transparent;
+  font-size: 16px;
 }
 
 body {
-  /* 设置默认字体大小 */
   font-size: 14px;
-  /* 设置默认行高 */
   line-height: 1.5;
-  /* 设置默认字体 */
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    'Helvetica Neue',
-    Helvetica,
-    Segoe UI,
-    Arial,
-    Roboto,
-    'PingFang SC',
-    'miui',
-    'Hiragino Sans GB',
-    'Microsoft Yahei',
-    sans-serif;
-  /* 防止页面滚动 */
-  overflow-x: hidden;
-  overflow-y: auto;
-  /* 防止文本调整大小 */
-  -webkit-text-size-adjust: 100%;
-  /* 提高性能 */
+}
+
+/* 响应式断点 */
+@media (max-width: 320px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 375px) {
+  html {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 414px) {
+  html {
+    font-size: 16px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 415px) {
+  html {
+    font-size: 17px;
+  }
+
+  .container {
+    padding: 25px;
+  }
+}
+
+/* 触摸优化 */
+.touchable {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 安全区域适配 */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* 导航栏适配 */
+.navbar-safe {
+  padding-top: env(safe-area-inset-top);
+  background-clip: padding-box;
+}
+
+/* 底部导航适配 */
+.tabbar-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+  background-clip: padding-box;
+}
+
+/* 按钮触摸反馈 */
+.van-button--primary:active,
+.van-button--success:active,
+.van-button--warning:active,
+.van-button--danger:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* 输入框适配 */
+.van-field__control {
+  font-size: 16px; /* 防止iOS缩放 */
+}
+
+/* 滚动优化 */
+.smooth-scroll {
   -webkit-overflow-scrolling: touch;
 }
 
-/* 常用工具类 */
-.clearfix::after {
-  content: '';
-  display: table;
-  clear: both;
-}
-
-/* 文本省略 */
-.text-ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-/* flex 布局 */
-.flex {
-  display: flex;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.flex-center {
-  justify-content: center;
-  align-items: center;
-}
-
-/* 常用边距 */
-.m-10 {
-  margin: 10px;
-}
-
-.mt-10 {
-  margin-top: 10px;
-}
-
-.mb-10 {
-  margin-bottom: 10px;
-}
-
-.ml-10 {
-  margin-left: 10px;
-}
-
-.mr-10 {
-  margin-right: 10px;
-}
-
-.p-10 {
-  padding: 10px;
-}
-
-.pt-10 {
-  padding-top: 10px;
-}
-
-.pb-10 {
-  padding-bottom: 10px;
-}
-
-.pl-10 {
-  padding-left: 10px;
-}
-
-.pr-10 {
-  padding-right: 10px;
+/* 禁用长按菜单 */
+.no-context-menu {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }

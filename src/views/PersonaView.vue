@@ -4,12 +4,30 @@
     <van-nav-bar title="选择女友风格" left-arrow @click-left="handleGoBack" class="nav-bar" />
 
     <!-- 风格分类标签 -->
-    <van-tabs v-model:active="activeTab" swipeable>
+    <van-tabs
+      v-model:active="activeTab"
+      swipeable
+      animated
+      :swipe-threshold="4"
+      lazy-render
+      :swipeable-duration="300"
+      :sticky="false"
+      :swipeable-threshold="10"
+    >
       <van-tab title="温柔系" />
       <van-tab title="可爱系" />
       <van-tab title="御姐系" />
       <van-tab title="定制系" />
     </van-tabs>
+
+    <!-- 游戏提示 -->
+    <div v-if="girlfriendStore.isGirlfriendSelected" class="game-tip">
+      <van-notice-bar
+        :text="`已选择${girlfriendStore.getCurrentGirlfriend?.name}，可以一起玩游戏增进感情哦~`"
+        left-icon="gem-o"
+        :scrollable="false"
+      />
+    </div>
 
     <!-- 人设卡片列表 -->
     <div class="persona-list">
@@ -22,7 +40,13 @@
       >
         <!-- 头像区域 -->
         <div class="avatar-wrapper">
-          <img :src="persona.avatar" alt="女友头像" class="persona-avatar" />
+          <img
+            :src="persona.avatar"
+            alt="女友头像"
+            class="persona-avatar"
+            :class="{ 'avatar-selected': currentPersona.id === persona.id }"
+            @click.stop="playVideoAnimation(index)"
+          />
           <div class="tag" v-if="persona.isNew">新</div>
           <div class="tag hot" v-if="persona.isHot">热门</div>
         </div>
@@ -62,6 +86,17 @@
         确认选择
         <van-icon name="arrow-right" class="btn-icon" />
       </van-button>
+
+      <van-button
+        v-if="girlfriendStore.isGirlfriendSelected"
+        round
+        block
+        class="games-btn"
+        @click="goToGames"
+      >
+        和{{ girlfriendStore.getCurrentGirlfriend?.name }}玩游戏
+        <van-icon name="gem-o" class="btn-icon" />
+      </van-button>
     </div>
 
     <!-- 确认对话框 -->
@@ -76,15 +111,27 @@
         <p>确定要将女友风格切换为【{{ currentPersona?.name }}】吗？</p>
       </div>
     </van-dialog>
+
+    <!-- 选择动画效果 -->
+    <div v-if="showAnimation" class="selection-animation">
+      <div class="animation-content">
+        <img :src="currentPersona?.avatar" alt="女友头像" class="animation-avatar" />
+        <div class="animation-text">{{ currentPersona?.greeting }}</div>
+      </div>
+    </div>
+
+    <!-- 视频动画组件 -->
+    <VideoAnimation ref="videoAnimationRef" />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { useGirlfriendStore } from '@/stores/girlfriend'
 import soundPlayer from '@/utils/soundPlayer'
+import VideoAnimation from '@/components/VideoAnimation.vue'
 // 引入图片
 import img_wenrou from '../assets/imgs/girls/girls_wenrou.png'
 import img_lovely from '../assets/imgs/girls/girls_lovely.png'
@@ -96,6 +143,8 @@ const girlfriendStore = useGirlfriendStore()
 const activeTab = ref(0) // 选中的标签页
 const currentPersona = ref(null) // 当前选中的人设
 const showDialog = ref(false) // 控制对话框显示
+const showAnimation = ref(false) // 控制动画显示
+const videoAnimationRef = ref(null) // 视频动画组件引用
 
 // 人设数据列表（可替换为实际接口数据）
 const personaList = ref([
@@ -165,6 +214,55 @@ watch(activeTab, (val) => {
   }
 })
 
+// 手动处理滑动事件
+onMounted(() => {
+  // 获取 tabs 容器
+  const tabsContainer = document.querySelector('.van-tabs')
+  if (tabsContainer) {
+    // 添加触摸事件监听器
+    let startX = 0
+    let startY = 0
+    let startTime = 0
+
+    tabsContainer.addEventListener(
+      'touchstart',
+      (e) => {
+        startX = e.touches[0].clientX
+        startY = e.touches[0].clientY
+        startTime = new Date().getTime()
+      },
+      { passive: true },
+    )
+
+    tabsContainer.addEventListener(
+      'touchend',
+      (e) => {
+        const endX = e.changedTouches[0].clientX
+        const endY = e.changedTouches[0].clientY
+        const endTime = new Date().getTime()
+
+        // 计算滑动距离和时间
+        const deltaX = endX - startX
+        const deltaY = endY - startY
+        const deltaTime = endTime - startTime
+
+        // 判断是否为有效的水平滑动
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30 && deltaTime < 500) {
+          // 水平滑动
+          if (deltaX > 0 && activeTab.value > 0) {
+            // 向右滑动，切换到上一个标签
+            activeTab.value--
+          } else if (deltaX < 0 && activeTab.value < 3) {
+            // 向左滑动，切换到下一个标签
+            activeTab.value++
+          }
+        }
+      },
+      { passive: true },
+    )
+  }
+})
+
 // 选择人设
 const handleSelectPersona = (persona) => {
   currentPersona.value = persona
@@ -182,27 +280,36 @@ const handleConfirm = () => {
 
 // 确认选择
 const confirmSelection = async () => {
-  // 保存选择到 Pinia store
-  girlfriendStore.selectGirlfriend(currentPersona.value)
+  // 显示动画
+  showAnimation.value = true
 
-  // 播放女友的打招呼声音
-  await playGreetingSound(currentPersona.value)
+  // 延迟一段时间后再执行选择逻辑
+  setTimeout(async () => {
+    // 保存选择到 Pinia store
+    girlfriendStore.selectGirlfriend(currentPersona.value)
 
-  // 显示成功提示
-  showToast({
-    message: '切换成功',
-    type: 'success',
-    duration: 1500,
-    onClose: () => {
-      router.push('/chat') // 切换后跳转到聊天页
-    },
-  })
+    // 播放女友的打招呼声音
+    await playGreetingSound(currentPersona.value)
+
+    // 隐藏动画
+    showAnimation.value = false
+
+    // 显示成功提示（使用透明背景）
+    showToast({
+      message: '切换成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        router.push('/chat') // 切换后跳转到聊天页
+      },
+    })
+  }, 2000)
 }
 
 // 播放女友打招呼声音
 const playGreetingSound = async (persona) => {
   try {
-    // 先显示 Toast 提示
+    // 显示 Toast 提示（使用透明背景）
     showToast({
       message: persona.greeting,
       duration: 5000, // 延长显示时间以匹配语音播放
@@ -216,7 +323,7 @@ const playGreetingSound = async (persona) => {
     // 如果语音播放失败，使用音调模拟作为备选方案
     try {
       await soundPlayer.playGreeting(persona.name)
-      // 显示 Toast 提示
+      // 显示 Toast 提示（使用透明背景）
       showToast({
         message: persona.greeting,
         duration: 3000,
@@ -224,7 +331,7 @@ const playGreetingSound = async (persona) => {
       })
     } catch (fallbackError) {
       console.warn('备选方案也失败了:', fallbackError)
-      // 如果所有方案都失败，至少显示 Toast 提示
+      // 如果所有方案都失败，至少显示 Toast 提示（使用透明背景）
       showToast({
         message: persona.greeting,
         duration: 3000,
@@ -233,6 +340,18 @@ const playGreetingSound = async (persona) => {
     }
   }
 }
+
+// 播放视频动画
+const playVideoAnimation = (index) => {
+  if (videoAnimationRef.value) {
+    videoAnimationRef.value.showVideoAnimation(index)
+  }
+}
+
+// 跳转到游戏页面
+const goToGames = () => {
+  router.push('/games')
+}
 </script>
 
 <style scoped lang="scss">
@@ -240,6 +359,8 @@ const playGreetingSound = async (persona) => {
 .persona-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #fdf7fa 0%, #f8f9fa 100%);
+  position: relative;
+  overflow: hidden;
 }
 
 // 导航栏
@@ -265,6 +386,11 @@ const playGreetingSound = async (persona) => {
   overflow: hidden;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 
+  // 确保 tabs 容器可以滑动
+  touch-action: pan-x;
+  user-select: none;
+  -webkit-user-select: none;
+
   .van-tab {
     color: #6b7280;
     font-weight: 500;
@@ -277,6 +403,31 @@ const playGreetingSound = async (persona) => {
   .van-tabs__line {
     background-color: #ff6b8b;
   }
+
+  // 确保滑动区域有明确的高度
+  :deep(.van-tabs__content) {
+    min-height: 200px;
+    touch-action: pan-x;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  :deep(.van-tab__pane) {
+    touch-action: pan-x;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  // 添加滑动指示器样式
+  :deep(.van-tabs__nav) {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+// 游戏提示
+.game-tip {
+  margin: 0 16px 16px;
 }
 
 // 人设卡片列表
@@ -298,6 +449,7 @@ const playGreetingSound = async (persona) => {
   padding: 16px;
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
 
   &:hover,
   &.active {
@@ -317,6 +469,14 @@ const playGreetingSound = async (persona) => {
       object-fit: cover;
       border: 3px solid #fff;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .avatar-selected {
+      border-color: #ff6b8b;
+      box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.3);
+      animation: pulse 1.5s infinite;
     }
 
     .tag {
@@ -389,6 +549,7 @@ const playGreetingSound = async (persona) => {
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(255, 107, 139, 0.3);
   transition: all 0.3s ease;
+  margin-bottom: 12px;
 
   &:active {
     transform: scale(0.98);
@@ -407,10 +568,70 @@ const playGreetingSound = async (persona) => {
   }
 }
 
+// 游戏按钮
+.games-btn {
+  height: 56px;
+  background: linear-gradient(90deg, #6b8bff 0%, #8fa3ff 100%);
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(107, 139, 255, 0.3);
+  transition: all 0.3s ease;
+  margin-bottom: 12px;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(107, 139, 255, 0.2);
+  }
+
+  .btn-icon {
+    margin-left: 4px;
+  }
+}
+
 // 对话框内容
 .dialog-content {
   padding: 20px;
   text-align: center;
+}
+
+// 选择动画效果
+.selection-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease;
+
+  .animation-content {
+    text-align: center;
+    animation: zoomIn 0.5s ease;
+
+    .animation-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #ff6b8b;
+      box-shadow: 0 0 20px rgba(255, 107, 139, 0.5);
+      animation:
+        rotate 2s infinite linear,
+        pulse 1.5s infinite;
+    }
+
+    .animation-text {
+      color: #fff;
+      font-size: 20px;
+      margin-top: 20px;
+      animation: fadeInOut 2s infinite;
+    }
+  }
 }
 
 // 动画效果
@@ -420,11 +641,54 @@ const playGreetingSound = async (persona) => {
   }
 
   50% {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
   }
 }
 

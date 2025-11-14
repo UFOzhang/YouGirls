@@ -25,9 +25,12 @@ const route = useRoute()
 const currentTitle = computed(() => {
   const titles = {
     home: 'AI女友',
-    message: '消息中心',
-    about: '关于',
-    profile: '个人中心',
+    chat: '聊天',
+    voice: '语音互动',
+    persona: '选择女友风格',
+    settings: '系统设置',
+    about: '关于我们',
+    mine: '个人中心',
   }
   return titles[route.name] || 'AI女友'
 })

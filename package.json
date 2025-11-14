@@ -16,6 +16,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@vant/touch-emulator": "^1.4.0",
     "pinia": "^3.0.3",
     "vant": "^4.9.21",
     "vue": "^3.5.22",

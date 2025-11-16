@@ -133,10 +133,10 @@ import { useGirlfriendStore } from '@/stores/girlfriend'
 import soundPlayer from '@/utils/soundPlayer'
 import VideoAnimation from '@/components/VideoAnimation.vue'
 // 引入图片
-import img_wenrou from '../assets/imgs/girls/girls_wenrou.png'
-import img_lovely from '../assets/imgs/girls/girls_lovely.png'
-import img_yujie from '../assets/imgs/girls/girls_yujie.png'
-import img_make from '../assets/imgs/girls/girls_make.png'
+import img_wenrou from '../../assets/imgs/girls/girls_wenrou.png'
+import img_lovely from '../../assets/imgs/girls/girls_lovely.png'
+import img_yujie from '../../assets/imgs/girls/girls_yujie.png'
+import img_make from '../../assets/imgs/girls/girls_make.png'
 
 const router = useRouter()
 const girlfriendStore = useGirlfriendStore()

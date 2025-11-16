@@ -1,12 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/home/HomeView.vue'
-import ChatView from '../views/ChatView.vue'
-import PersonaView from '../views/PersonaView.vue'
+import ChatView from '../views/chat/ChatView.vue'
+import PersonaView from '../views/persons/PersonaView.vue'
 import PersonManage from '../views/mine/PersonManage.vue'
-import VoiceView from '../views/VoiceView.vue'
-import SettingsView from '../views/SettingsView.vue'
-import AboutView from '../views/AboutView.vue'
-import GamesView from '../views/GamesView.vue'
+import VoiceView from '../views/voice/VoiceView.vue'
+import SettingsView from '../views/settings/SettingsView.vue'
+import AboutView from '../views/about/AboutView.vue'
+import GamesView from '../views/games/GamesView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
